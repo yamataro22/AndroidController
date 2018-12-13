@@ -17,13 +17,26 @@ import android.view.View;
  * Created by adamw on 11.12.2018.
  */
 
-public class JoystickView extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener {
+public class JoystickView extends JoystickBaseClass{
 
     float centerX;
     float centerY;
     float baseRadius;
     float hatRadius;
-    public JoystickListener joystickCallback;
+
+    public JoystickView(Context context)
+    {
+        super(context);
+    }
+    public JoystickView(Context c, AttributeSet a, int style)
+    {
+        super(c,a,style);
+    }
+
+    public JoystickView(Context c, AttributeSet a)
+    {
+        super(c,a);
+    }
 
     private void setupDimensions()
     {
@@ -49,55 +62,12 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
         }
     }
 
-    public interface JoystickListener
-
-    {
-        void onJoystickMoved(float xPercent, float yPercent, int source);
-    }
 
 
-    public JoystickView(Context context) {
-        super(context);
-        setOnTouchListener(this);
 
 
-        getHolder().addCallback(this);
-
-        //ustawia przeźroczyste tło
-        setZOrderOnTop(true);
-        getHolder().setFormat(PixelFormat.TRANSLUCENT);
-
-        if(context instanceof JoystickListener)
-            joystickCallback = (JoystickListener) context;
-    }
-
-    public JoystickView(Context c, AttributeSet a, int style)
-    {
-        super(c,a,style);
-        setOnTouchListener(this);
-
-        //ustawia przeźroczyste tło
-        getHolder().addCallback(this);
-        setZOrderOnTop(true);
 
 
-        getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        if(c instanceof JoystickListener)
-            joystickCallback = (JoystickListener) c;
-    }
-
-    public JoystickView (Context c, AttributeSet a)
-    {
-        super(c,a);
-        setOnTouchListener(this);
-        getHolder().addCallback(this);
-        //ustawia przeźroczyste tło
-        setZOrderOnTop(true);
-        getHolder().setFormat(PixelFormat.TRANSLUCENT);
-
-        if(c instanceof JoystickListener)
-            joystickCallback = (JoystickListener) c;
-    }
 
 
 
