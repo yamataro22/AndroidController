@@ -32,7 +32,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         >
-        <com.example.adamw.androidcontroller.JoystickView
+        <com.example.adamw.androidcontroller.LinearJoystickView
 
             android:layout_height="match_parent"
             android:layout_width="match_parent"

@@ -4,36 +4,36 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 
 /**
- * Created by adamw on 11.12.2018.
+ * Created by adamw on 13.12.2018.
  */
 
-public class JoystickView extends JoystickBaseClass{
+public class LinearJoystickView extends JoystickBaseClass {
 
-    float centerX;
-    float centerY;
-    float baseRadius;
-    float hatRadius;
+    private float baseX;
+    private float baseY;
+    private float baseRadius;
+    private float hatRadius;
 
-    public JoystickView(Context context)
+    public LinearJoystickView(Context context)
     {
         super(context);
     }
-    public JoystickView(Context c, AttributeSet a, int style)
+    public LinearJoystickView(Context c, AttributeSet a, int style)
     {
         super(c,a,style);
     }
 
-    public JoystickView(Context c, AttributeSet a)
+    public LinearJoystickView(Context c, AttributeSet a)
     {
         super(c,a);
     }
@@ -42,22 +42,33 @@ public class JoystickView extends JoystickBaseClass{
     {
         centerX = getWidth()/2;
         centerY = getHeight()/2;
+
         baseRadius = Math.min(getWidth(), getHeight()) / 3;
+        baseX = Math.min(getWidth(), getHeight()) / 4;
+        baseY = Math.min(getWidth(), getHeight()) / (2.5f);
         hatRadius = Math.min(getWidth(), getHeight()) / 5;
     }
 
-    private void drawJoystick(float newX, float newY)
-    {
 
+
+    private void drawJoystick(float newY)
+    {
         if(getHolder().getSurface().isValid())
         {
             Canvas myCanvas = this.getHolder().lockCanvas();
             Paint colors = new Paint();
             myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);   //czyści tło
+
             colors.setARGB(255,50,50,50);                           //kolor podstawy joysticka
-            myCanvas.drawCircle(centerX,centerY,baseRadius,colors);            //rysuj podstawę
+            int left = (int)(centerX - baseX);
+            int right = (int)(centerX + baseX);
+            int top = (int)(centerY + baseY);
+            int bottom = (int)(centerY - baseY);
+            RectF rect = new RectF(left,top,right,bottom);
+
+            myCanvas.drawRoundRect(rect,60f, 80f,colors);          //rysuj podstawę
             colors.setARGB(255,0,0,255);                           //kolor podstawy joysticka
-            myCanvas.drawCircle(newX,newY,hatRadius,colors);
+            myCanvas.drawCircle(centerX,newY,hatRadius,colors);
             getHolder().unlockCanvasAndPost(myCanvas);
         }
     }
@@ -67,7 +78,7 @@ public class JoystickView extends JoystickBaseClass{
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         setupDimensions();
-        drawJoystick(centerX,centerY);
+        drawJoystick(centerY);
     }
 
     @Override
@@ -89,7 +100,7 @@ public class JoystickView extends JoystickBaseClass{
                 float displacement = (float) Math.sqrt(Math.pow(motionEvent.getX() - centerX, 2) + Math.pow(motionEvent.getY() - centerY, 2));
                 if(displacement < baseRadius)
                 {
-                    drawJoystick(motionEvent.getX(), motionEvent.getY());
+                    drawJoystick(motionEvent.getY());
                     joystickCallback.onJoystickMoved((motionEvent.getX() - centerX) / baseRadius,
                             (motionEvent.getY() - centerY) / baseRadius, getId());
                 }
@@ -98,7 +109,7 @@ public class JoystickView extends JoystickBaseClass{
                     float ratio = baseRadius / displacement;
                     float constrainedX = centerX + (motionEvent.getX() - centerX) * ratio;
                     float constrainedY = centerY + (motionEvent.getY() - centerY) * ratio;
-                    drawJoystick(constrainedX, constrainedY);
+                    drawJoystick(constrainedY);
                     joystickCallback.onJoystickMoved((constrainedX - centerX) / baseRadius,
                             (constrainedY - centerY) / baseRadius, getId());
                 }
@@ -106,7 +117,7 @@ public class JoystickView extends JoystickBaseClass{
             }
             else
             {
-                drawJoystick(centerX, centerY);
+                drawJoystick(centerY);
                 joystickCallback.onJoystickMoved(0, 0, getId());
             }
         }
