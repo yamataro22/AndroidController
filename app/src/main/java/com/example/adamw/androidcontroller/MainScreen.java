@@ -11,6 +11,7 @@ import android.view.View;
 
 public class MainScreen extends AppCompatActivity {
 
+    SSHClient client;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,17 +20,6 @@ public class MainScreen extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        new AsyncTask<Integer, Void, Void>(){
-            @Override
-            protected Void doInBackground(Integer... params) {
-                try {
-                    SSHClient.executeRemoteCommand("pi", "kawasaki12Z","192.168.4.1", 22);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }.execute(1);
     }
 
     @Override
