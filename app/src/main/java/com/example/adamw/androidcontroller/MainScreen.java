@@ -1,12 +1,12 @@
 package com.example.adamw.androidcontroller;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
 
 public class MainScreen extends AppCompatActivity {
@@ -19,6 +19,17 @@ public class MainScreen extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        new AsyncTask<Integer, Void, Void>(){
+            @Override
+            protected Void doInBackground(Integer... params) {
+                try {
+                    SSHClient.executeRemoteCommand("pi", "kawasaki12Z","192.168.4.1", 22);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute(1);
     }
 
     @Override
