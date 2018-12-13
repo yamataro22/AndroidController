@@ -9,6 +9,6 @@
 
     <string name="ip_text_view">Wprowadź IP RPI</string>
     <string name="password_text_view">Wprowadź hasło</string>
-    <string name="connect_button">Połącz z RPI</string>
+    <string name="connect_button">Połącz</string>
 
 </resources>
