@@ -24,6 +24,30 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/username_text_view"
+            android:layout_weight="2"
+            android:gravity="left"
+            />
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText_username"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text = "pi"
+            />
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -71,6 +95,8 @@
             android:layout_width="0dp"
             android:layout_weight="2"
             android:inputType="textPassword"
+            android:text="kawasaki12Z"
+            android:textAlignment="textEnd"
             />
     </LinearLayout>
 

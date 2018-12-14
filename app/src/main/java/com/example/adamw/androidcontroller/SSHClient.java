@@ -13,8 +13,8 @@ import java.util.Properties;
 
 public class SSHClient {
 
-    Session session;
-    ChannelExec channelssh;
+    private Session session;
+    private ChannelExec channelssh;
 
     public boolean createSession(String username,String password,String hostname,int port) throws Exception
     {
@@ -69,7 +69,10 @@ public class SSHClient {
         channelssh.disconnect();
         return baos.toString();
     }
-
+    boolean checkConnection()
+    {
+        return session.isConnected() ? true:false;
+    }
 
 
 }
