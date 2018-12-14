@@ -28,19 +28,21 @@ public class SSHClient {
         session.setConfig(prop);
 
         session.connect();
-        channelssh = (ChannelExec)
-                session.openChannel("exec");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        channelssh.setOutputStream(baos);
+
         return true;
     }
 
     public boolean sendCommand(String command) throws Exception
     {
         // Execute command
+
+        ChannelExec channelssh = (ChannelExec)session.openChannel("exec");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        channelssh.setOutputStream(baos);
         channelssh.setCommand(command);
         channelssh.connect();
         channelssh.disconnect();
+        channelssh = null;
         return true;
     }
 
