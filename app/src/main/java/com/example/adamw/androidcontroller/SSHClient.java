@@ -14,11 +14,13 @@ import java.util.Properties;
 public class SSHClient {
 
     private Session session;
-    private ChannelExec channelssh;
 
     public boolean createSession(String username,String password,String hostname,int port) throws Exception
     {
         JSch jsch = new JSch();
+        Log.i("ssh",username);
+        Log.i("ssh",password);
+        Log.i("ssh",hostname);
         session = jsch.getSession(username, hostname, port);
         session.setPassword(password);
 
@@ -28,8 +30,13 @@ public class SSHClient {
         session.setConfig(prop);
 
         session.connect();
-
+        Log.i("ssh",session.isConnected()+"");
         return true;
+    }
+
+    public Session getSession()
+    {
+        return session;
     }
 
     public boolean sendCommand(String command) throws Exception
@@ -45,6 +52,24 @@ public class SSHClient {
         channelssh = null;
         return true;
     }
+
+    static public boolean sendCommand(Session ses, String command) throws Exception
+    {
+        // Execute command
+
+        ChannelExec channelssh = (ChannelExec)ses.openChannel("exec");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        channelssh.setOutputStream(baos);
+        channelssh.setCommand(command);
+        channelssh.connect();
+        Log.i("ssh","connect");
+        channelssh.disconnect();
+        Log.i("ssh","disconnect");
+        channelssh = null;
+        Log.i("ssh","null, teraz return");
+        return true;
+    }
+
 
     public static String executeRemoteCommand(String username,String password,String hostname,int port)
             throws Exception {
