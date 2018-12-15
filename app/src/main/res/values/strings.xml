@@ -6,12 +6,11 @@
 
     <string name="startSteering">Rozpocznij sterowanie</string>
     <!-- Strings related to Settings -->
-
     <string name="ip_text_view">Wprowadź IP RPI</string>
+    <string name="username_text_view">Wprowadź nazwę użytkownika</string>
     <string name="password_text_view">Wprowadź hasło</string>
     <string name="connect_button">Połącz</string>
     <string name="on">Włącz</string>
     <string name="off">Wyłącz</string>
     <string name="steering">Sterowanie</string>
-
 </resources>
