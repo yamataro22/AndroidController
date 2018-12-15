@@ -63,21 +63,6 @@
         android:text="" />
 
 
-
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="onSwitchClicked"
-        android:layout_marginTop="19dp"
-        android:layout_marginEnd="58dp"
-        android:textOn="@string/on"
-        android:textOff="@string/off">
-
-    </Switch>
-
     <Switch
         android:id="@+id/enable_switch"
         android:layout_width="wrap_content"

@@ -13,16 +13,26 @@ import android.widget.TextView;
 public class SteeringActivity extends Activity implements JoystickView.JoystickListener{
 
     private TextView mDioda;
-    private JoystickView mFirstJoystick;
-    private JoystickView mSecondJoystick;
+    private JoystickBaseClass mFirstJoystick;
+    private JoystickBaseClass mSecondJoystick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steering);
+        init();
     }
 
+    private void init()
+    {
+        mFirstJoystick = findViewById(R.id.firstJoystick);
+        mSecondJoystick = findViewById(R.id.secondJoystick);
+        mDioda = findViewById(R.id.diode);
+        mFirstJoystick.setEnabled(false);
+        mSecondJoystick.setEnabled(false);
+
+    }
     @Override
     public void onJoystickMoved(float xPercent, float yPercent, int source) {
         Log.i("dimensions:" , xPercent+" "+yPercent+ " ");
