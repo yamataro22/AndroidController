@@ -56,5 +56,9 @@ public class Indicator extends View {
     {
         isEnabled = state;
     }
+    public boolean getState()
+    {
+        return isEnabled;
+    }
 
 }

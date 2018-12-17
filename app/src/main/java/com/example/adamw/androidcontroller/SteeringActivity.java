@@ -1,9 +1,11 @@
 package com.example.adamw.androidcontroller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Paint;
 import android.media.MediaCas;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -35,7 +37,7 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
     private String username = "pi";
     private String password = "xxx";
     private String hostname = "192.168.4.1";
-
+    private IndicatorListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
             hostname = intent.getStringExtra(HOSTNAME_MESSAGE);
 
         }
-
+        listener= new IndicatorListener();
     }
 
     private class AsyncInitializerSteering extends AsyncInitializer
@@ -80,29 +82,23 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
 
             if(session!=null) indicator.setState(session.isConnected()? true : false);
             indicator.invalidate();
-            if(session.isConnected())
-            {
-                try
-                {
-                    Thread.sleep(500);
-                } catch(InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            else {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            sleepMilis(1000);
         }
         private void init()
         {
             if(indicator == null)
             {
                 indicator = findViewById(R.id.view_indicator);
+            }
+        }
+        private void sleepMilis(long milis)
+        {
+            try
+            {
+                Thread.sleep(milis);
+            }catch (Exception e)
+            {
+                e.printStackTrace();
             }
         }
     }
@@ -120,21 +116,21 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
         Log.i("dimensions:" , xPercent+" "+yPercent+ " ");
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void onClickConnectSteering(View view)
     {
-        if(session == null)
-        {
+
             try {
                 session = new AsyncInitializerSteering().execute(username,password,hostname).get();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else
+
+
+        if(!listener.isAlive())
         {
-            Toast.makeText(this, "po co drugi raz?", Toast.LENGTH_SHORT).show();
+            listener.run();
         }
-        new IndicatorListener().run();
     }
 
 

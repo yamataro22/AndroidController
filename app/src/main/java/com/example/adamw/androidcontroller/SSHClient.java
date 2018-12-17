@@ -99,9 +99,9 @@ public class SSHClient {
         channelssh.disconnect();
         return baos.toString();
     }
-    boolean checkConnection()
+    public static boolean checkConnection(Session session)
     {
-        return session.isConnected() ? true:false;
+        return (session!=null && session.isConnected()) ? true:false;
     }
 
 

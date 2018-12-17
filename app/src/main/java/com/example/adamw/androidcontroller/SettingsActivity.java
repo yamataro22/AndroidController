@@ -111,7 +111,7 @@ public class SettingsActivity extends Activity {
             try
             {
                 Session session = (Session)objects[0].get(0);
-                if(session == null || !session.isConnected()) return false;
+                if(SSHClient.checkConnection(session)) return false;
                 SSHClient.sendCommand(session,(String)objects[1].get(0));
 
             } catch (Exception e) {
