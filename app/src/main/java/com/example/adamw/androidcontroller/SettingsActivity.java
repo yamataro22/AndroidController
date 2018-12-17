@@ -3,13 +3,16 @@ package com.example.adamw.androidcontroller;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.jcraft.jsch.Session;
@@ -17,6 +20,11 @@ import com.jcraft.jsch.Session;
 import java.util.ArrayList;
 
 public class SettingsActivity extends Activity {
+
+    public static final String USERNAME_MESSAGE = "m1";
+    public static final String HOSTNAME_MESSAGE = "m2";
+    public static final String PASSWORD_MESSAGE = "m3";
+
 
     private String ip_adress;
     private String password;
@@ -120,11 +128,36 @@ public class SettingsActivity extends Activity {
 
     public void getLoginData()
     {
-        EditText editText = findViewById(R.id.ip_number);
+        EditText editText = findViewById(R.id.editText_ip_number);
         ip_adress = editText.getText().toString();
-        EditText passwordText = findViewById(R.id.password);
+        EditText passwordText = findViewById(R.id.editText_password);
         password = passwordText.getText().toString();
         EditText usernameText = findViewById(R.id.editText_username);
         username = usernameText.getText().toString();
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            Intent intent = new Intent();
+
+            EditText editText = findViewById(R.id.editText_username);
+            String username = editText.getText().toString();
+            intent.putExtra(USERNAME_MESSAGE, username);
+
+            editText = findViewById(R.id.editText_ip_number);
+            String hostname = editText.getText().toString();
+            intent.putExtra(HOSTNAME_MESSAGE, hostname);
+
+            editText = findViewById(R.id.editText_password);
+            String password = editText.getText().toString();
+            intent.putExtra(PASSWORD_MESSAGE, password);
+
+            setResult(RESULT_OK, intent);
+            finish();
+            return true;
+        }
+        return false;
     }
 }

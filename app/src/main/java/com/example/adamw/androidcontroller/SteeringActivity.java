@@ -19,6 +19,11 @@ import java.util.concurrent.ExecutionException;
 
 public class SteeringActivity extends Activity implements JoystickView.JoystickListener{
 
+    public static final String USERNAME_MESSAGE = "m1";
+    public static final String HOSTNAME_MESSAGE = "m2";
+    public static final String PASSWORD_MESSAGE = "m3";
+
+
     private JoystickBaseClass mFirstJoystick;
     private JoystickBaseClass mSecondJoystick;
     private Session session;
