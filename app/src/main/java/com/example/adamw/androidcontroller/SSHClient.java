@@ -27,7 +27,12 @@ public class SSHClient {
         prop.put("StrictHostKeyChecking", "no");
         session.setConfig(prop);
 
-        session.connect();
+        try {
+            session.connect(500);
+        }catch(JSchException e)
+        {
+            return false;
+        }
 
         return true;
     }

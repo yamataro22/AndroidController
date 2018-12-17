@@ -33,63 +33,6 @@ public class SettingsActivity extends Activity {
 
     private IndicatorListener listener;
 
-    private class AsyncExe extends AsyncTask<ArrayList<Object>, Void, Boolean>
-    {
-
-        @Override
-        protected Boolean doInBackground(ArrayList<Object>... objects) {
-            try
-            {
-                Session session = (Session)objects[0].get(0);
-                if(session == null || !session.isConnected()) return false;
-                SSHClient.sendCommand(session,(String)objects[1].get(0));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean state) {
-            if(state)
-            {
-                Toast.makeText(getApplicationContext(), "Wysłano!", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                Toast.makeText(getApplicationContext(), "Nie udało się!", Toast.LENGTH_SHORT).show();
-            }
-
-    }
-    }
-
-    private class IndicatorListener extends Thread
-    {
-        Indicator indicator;
-
-        public void run()
-        {
-            init();
-            if(session!=null) indicator.setState(session.isConnected()? true : false);
-            indicator.invalidate();
-            try
-            {
-                Thread.sleep(500);
-            } catch(InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        private void init()
-        {
-            if(indicator == null)
-            {
-                indicator = findViewById(R.id.view_indicator);
-            }
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +46,7 @@ public class SettingsActivity extends Activity {
     {
         getLoginData();
         try{
-            session = new AsyncInitializer().execute(username,password,ip_adress).get();
+            session = new AsyncInitializerSettions().execute(username,password,ip_adress).get();
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -159,5 +102,72 @@ public class SettingsActivity extends Activity {
             return true;
         }
         return false;
+    }
+    private class AsyncExe extends AsyncTask<ArrayList<Object>, Void, Boolean>
+    {
+
+        @Override
+        protected Boolean doInBackground(ArrayList<Object>... objects) {
+            try
+            {
+                Session session = (Session)objects[0].get(0);
+                if(session == null || !session.isConnected()) return false;
+                SSHClient.sendCommand(session,(String)objects[1].get(0));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean state) {
+            if(state)
+            {
+                Toast.makeText(getApplicationContext(), "Wysłano!", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(), "Nie udało się!", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    private class IndicatorListener extends Thread
+    {
+        Indicator indicator;
+
+        public void run()
+        {
+            init();
+            if(session!=null) indicator.setState(session.isConnected()? true : false);
+            indicator.invalidate();
+            try
+            {
+                Thread.sleep(500);
+            } catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        private void init()
+        {
+            if(indicator == null)
+            {
+                indicator = findViewById(R.id.view_indicator);
+            }
+        }
+    }
+
+    private class AsyncInitializerSettions extends AsyncInitializer
+    {
+        @Override
+        protected void onPostExecute(Session result)
+        {
+            String message = (result!= null && result.isConnected()) ? "Połaczono" : "Nie udało się połączyć..";
+            Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -95,7 +95,7 @@
             android:layout_width="0dp"
             android:layout_weight="2"
             android:inputType="textPassword"
-            android:text="kawasaki12Z"
+            android:text=""
             android:textAlignment="textEnd"
             />
     </LinearLayout>

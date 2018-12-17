@@ -24,6 +24,12 @@ public class MainScreen extends AppCompatActivity {
             this.pass = pass;
         }
 
+        public LoginData() {
+            this.username = "pi";
+            this.pass = "xxx";
+            this.hostname = "192.168.4.1";
+        }
+
         public String getUsername() {
             return username;
         }
@@ -62,8 +68,14 @@ public class MainScreen extends AppCompatActivity {
         setContentView(R.layout.activity_main_screen);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        loginParameters = new LoginData("pi","192.168.4.1","xxx");
+        loginParameters = new LoginData();
 
+        if(savedInstanceState!=null)
+        {
+            loginParameters.setUsername(savedInstanceState.getString("USERNAME"));
+            loginParameters.setPass(savedInstanceState.getString("PASSWORD"));
+            loginParameters.setHostname(savedInstanceState.getString("HOSTNAME"));
+        }
     }
 
     @Override
@@ -98,6 +110,9 @@ public class MainScreen extends AppCompatActivity {
     public void onClickSteering(View view)
     {
         Intent intent = new Intent(this, SteeringActivity.class);
+        intent.putExtra(SteeringActivity.USERNAME_MESSAGE,loginParameters.getUsername());
+        intent.putExtra(SteeringActivity.PASSWORD_MESSAGE,loginParameters.getPass());
+        intent.putExtra(SteeringActivity.HOSTNAME_MESSAGE,loginParameters.getHostname());
         startActivity(intent);
     }
 
@@ -106,8 +121,18 @@ public class MainScreen extends AppCompatActivity {
         if(requestCode == 2)
         {
             loginParameters.setUsername(data.getStringExtra(SettingsActivity.USERNAME_MESSAGE));
-            loginParameters.setHostname(data.getStringExtra(SettingsActivity.HOSTNAME_MESSAGE));
             loginParameters.setPass(data.getStringExtra(SettingsActivity.PASSWORD_MESSAGE));
+            loginParameters.setHostname(data.getStringExtra(SettingsActivity.HOSTNAME_MESSAGE));
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("USERNAME",loginParameters.getUsername());
+        outState.putString("PASSWORD",loginParameters.getPass());
+        outState.putString("HOSTNAME",loginParameters.getHostname());
+
+    }
+
 }
