@@ -18,9 +18,7 @@ public class SSHClient {
     public boolean createSession(String username,String password,String hostname,int port) throws Exception
     {
         JSch jsch = new JSch();
-        Log.i("ssh",username);
-        Log.i("ssh",password);
-        Log.i("ssh",hostname);
+
         session = jsch.getSession(username, hostname, port);
         session.setPassword(password);
 
@@ -30,7 +28,7 @@ public class SSHClient {
         session.setConfig(prop);
 
         session.connect();
-        Log.i("ssh",session.isConnected()+"");
+
         return true;
     }
 

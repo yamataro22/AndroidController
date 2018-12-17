@@ -34,6 +34,7 @@
         android:paddingBottom="30dp"
         android:layout_marginTop="10dp"
         android:id="@+id/przycisk_polacz"
+        android:onClick="onClickConnectSteering"
         />
     <FrameLayout
         android:layout_width="220dp"
@@ -50,24 +51,21 @@
             />
     </FrameLayout>
 
-
-    <TextView
-        android:id="@+id/diode"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/circle"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/przycisk_polacz"
-        android:text="" />
+     <com.example.adamw.androidcontroller.Indicator
+            android:id="@+id/view_indicator"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/przycisk_polacz"
+            android:paddingBottom="5dp"
+         />
 
 
     <Switch
         android:id="@+id/enable_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/diode"
+        android:layout_above="@+id/view_indicator"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:onClick="onEnableSwitchClicked"

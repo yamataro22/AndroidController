@@ -21,32 +21,9 @@ public class SettingsActivity extends Activity {
     private String ip_adress;
     private String password;
     private String username;
-    SSHClient client;
-    Session session;
+    private Session session;
 
-
-    private class Async extends AsyncTask<String,Void,Session>
-    {
-
-        @Override
-        protected Session doInBackground(String... strings) {
-            try
-            {
-                client = new SSHClient();
-                client.createSession(strings[0], strings[1],strings[2], 22);
-                client.sendCommand("mkdir fakegkjnwg");
-            } catch (Exception e) {
-                e.printStackTrace();
-        }
-            return client.getSession();
-    }
-        @Override
-        protected void onPostExecute(Session result) {
-            Indicator indicator = findViewById(R.id.view_indicator);
-            indicator.setState(client.checkConnection()? true : false);
-            indicator.invalidate();
-        }
-    }
+    private IndicatorListener listener;
 
     private class AsyncExe extends AsyncTask<ArrayList<Object>, Void, Boolean>
     {
@@ -65,6 +42,7 @@ public class SettingsActivity extends Activity {
             }
             return true;
         }
+
         @Override
         protected void onPostExecute(Boolean state) {
             if(state)
@@ -79,10 +57,37 @@ public class SettingsActivity extends Activity {
     }
     }
 
+    private class IndicatorListener extends Thread
+    {
+        Indicator indicator;
+
+        public void run()
+        {
+            init();
+            if(session!=null) indicator.setState(session.isConnected()? true : false);
+            indicator.invalidate();
+            try
+            {
+                Thread.sleep(500);
+            } catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        private void init()
+        {
+            if(indicator == null)
+            {
+                indicator = findViewById(R.id.view_indicator);
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        listener = new IndicatorListener();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -90,14 +95,18 @@ public class SettingsActivity extends Activity {
     {
         getLoginData();
         try{
-            session = new Async().execute(username,password,ip_adress).get();
+            session = new AsyncInitializer().execute(username,password,ip_adress).get();
         }catch(Exception e)
         {
             e.printStackTrace();
         }
+        if(!listener.isAlive())
+        {
+            listener.run();
+        }
     }
 
-    public void onClickSendCommand(View view) throws Exception {
+    public void onClickSendCommand(View view) {
         String command;
         EditText editText = findViewById(R.id.editText_command);
         command = editText.getText().toString();

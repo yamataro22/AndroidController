@@ -95,7 +95,7 @@
             android:layout_width="0dp"
             android:layout_weight="2"
             android:inputType="textPassword"
-            android:text="xxx"
+            android:text="kawasaki12Z"
             android:textAlignment="textEnd"
             />
     </LinearLayout>
@@ -110,6 +110,7 @@
             android:text="@string/connect_button"
             android:onClick="onClickConnect"
             android:gravity="left"/>
+
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

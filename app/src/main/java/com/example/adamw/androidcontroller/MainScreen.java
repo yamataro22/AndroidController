@@ -11,7 +11,7 @@ import android.view.View;
 
 public class MainScreen extends AppCompatActivity {
 
-    SSHClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

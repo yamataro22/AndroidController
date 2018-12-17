@@ -39,7 +39,8 @@ public class Indicator extends View {
 
         centerY = getHeight()/2;
         radius = Math.min(getWidth(),getHeight())/3;
-        centerX = getWidth()-2*radius;
+        //centerX = getWidth()-2*radius;
+        centerX = getWidth()/2;
     }
 
 
