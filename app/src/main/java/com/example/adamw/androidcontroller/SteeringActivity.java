@@ -21,6 +21,7 @@ import com.jcraft.jsch.Session;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class SteeringActivity extends Activity implements JoystickView.JoystickListener{
@@ -39,6 +40,8 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
     private String hostname = "192.168.4.1";
     private IndicatorListener listener;
 
+    String[] joystickCoords;
+    private dimensionsThread thread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -58,6 +61,34 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
 
         }
         listener= new IndicatorListener();
+        joystickCoords = new String[3];
+        joystickCoords[0] = "0";
+        joystickCoords[1] = "0";
+        joystickCoords[2] = "0";
+
+        thread = new dimensionsThread();
+    }
+
+    private class dimensionsThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            while(true)
+            {
+                String msg = "echo " + joystickCoords[0]+ " " + joystickCoords[1] + " " + joystickCoords[2] + " > dimensions";
+                Log.i("dimensions", msg);
+
+                new AsyncCoordSender().execute((Object)session, (Object)msg);
+                try {
+                    Thread.sleep(100);
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+        }
     }
 
     private class AsyncInitializerSteering extends AsyncInitializer
@@ -113,7 +144,18 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
 
     @Override
     public void onJoystickMoved(float xPercent, float yPercent, int source) {
-        Log.i("dimensions:" , xPercent+" "+yPercent+ " ");
+        if(source == 2131558561)    //left joystick
+        {
+            int x = (int)(xPercent*100);
+            int y = (int)(-yPercent*100);
+            joystickCoords[0] = x+"";
+            joystickCoords[1] = y+"";
+        }
+        else if (source == 2131558563)  //right joystick
+        {
+            int y = (int)(-yPercent*100);
+            joystickCoords[2] = y+"";
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -141,12 +183,14 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
         // "odblokuj joysticki"
         if (on){
             enableJoysticks(true);
+            if(!thread.isAlive()) thread.start();
         }
 
         //w naszym wypadku bedzie to: "zablokuj joysticki"
         else
         {
             enableJoysticks(false);
+            //thread.stop();
         }
     }
 
@@ -155,5 +199,34 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
         mSecondJoystick.setEnabled(enable_value);
     }
 
+    private class AsyncCoordSender extends AsyncCommunicator
+    {
+        @Override
+        protected Boolean doInBackground(Object... objects) {
+            try
+            {
+                Session session = (Session)objects[0];
+                if(session == null || !session.isConnected()) return false;
+                Log.i("dimensions", "wysyłam "+(String)objects[1]);
+                SSHClient.sendCommand(session,(String)objects[1]);
 
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+        @Override
+        public void onPostExecute(Boolean result)
+        {
+            Log.i("dimensions", "wysłano");
+        }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        thread.interrupt();
+    }
 }

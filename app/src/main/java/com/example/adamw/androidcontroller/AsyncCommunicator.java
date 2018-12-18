@@ -12,16 +12,16 @@ in argument list, first array element is a session object,
 second command as String
  */
 
-public class AsyncCommunicator extends AsyncTask<ArrayList<Object>, Void, Boolean>{
+public class AsyncCommunicator extends AsyncTask<Object, Void, Boolean>{
         String message;
         @Override
-        protected Boolean doInBackground(ArrayList<Object>... objects) {
+        protected Boolean doInBackground(Object... objects) {
             try
             {
-                Session session = (Session)objects[0].get(0);
+                Session session = (Session)objects[0];
                 if(session == null || !session.isConnected()) return false;
                 Log.i("wiadomosc","wysylam wiadomosc");
-                message = SSHClient.sendCommandforResponse(session,(String)objects[1].get(0));
+                message = SSHClient.sendCommandforResponse(session,(String)objects[1]);
 
             } catch (Exception e) {
                 e.printStackTrace();

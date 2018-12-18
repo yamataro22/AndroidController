@@ -62,11 +62,7 @@ public class SettingsActivity extends Activity {
         String command;
         EditText editText = findViewById(R.id.editText_command);
         command = editText.getText().toString();
-        ArrayList<Object> ses = new ArrayList<>();
-        ses.add(session);
-        ArrayList<Object> str = new ArrayList<>();
-        str.add(command);
-        new AsyncExe().execute(ses,str);
+        new AsyncExe().execute(session,command);
     }
 
 

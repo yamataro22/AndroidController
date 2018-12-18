@@ -101,16 +101,14 @@ public class LinearJoystickView extends JoystickBaseClass {
                 if(displacement < baseRadius)
                 {
                     drawJoystick(motionEvent.getY());
-                    joystickCallback.onJoystickMoved((motionEvent.getX() - centerX) / baseRadius,
-                            (motionEvent.getY() - centerY) / baseRadius, getId());
+                    joystickCallback.onJoystickMoved(0, (motionEvent.getY() - centerY) / baseRadius, getId());
                 }
                 else
                 {
                     float ratio = baseRadius / displacement;
-                    float constrainedX = centerX + (motionEvent.getX() - centerX) * ratio;
                     float constrainedY = centerY + (motionEvent.getY() - centerY) * ratio;
                     drawJoystick(constrainedY);
-                    joystickCallback.onJoystickMoved((constrainedX - centerX) / baseRadius,
+                    joystickCallback.onJoystickMoved(0 ,
                             (constrainedY - centerY) / baseRadius, getId());
                 }
 
