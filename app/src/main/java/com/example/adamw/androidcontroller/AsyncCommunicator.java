@@ -1,6 +1,8 @@
 package com.example.adamw.androidcontroller;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
 import com.jcraft.jsch.Session;
 import java.util.ArrayList;
 
@@ -11,14 +13,15 @@ second command as String
  */
 
 public class AsyncCommunicator extends AsyncTask<ArrayList<Object>, Void, Boolean>{
-
+        String message;
         @Override
         protected Boolean doInBackground(ArrayList<Object>... objects) {
             try
             {
                 Session session = (Session)objects[0].get(0);
                 if(session == null || !session.isConnected()) return false;
-                SSHClient.sendCommand(session,(String)objects[1].get(0));
+                Log.i("wiadomosc","wysylam wiadomosc");
+                message = SSHClient.sendCommandforResponse(session,(String)objects[1].get(0));
 
             } catch (Exception e) {
                 e.printStackTrace();

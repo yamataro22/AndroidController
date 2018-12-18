@@ -35,7 +35,7 @@ public class SteeringActivity extends Activity implements JoystickView.JoystickL
     private Session session;
 
     private String username = "pi";
-    private String password = "xxx";
+    private String password = "";
     private String hostname = "192.168.4.1";
     private IndicatorListener listener;
 

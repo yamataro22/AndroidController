@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jcraft.jsch.Session;
@@ -85,17 +86,9 @@ public class SettingsActivity extends Activity {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             Intent intent = new Intent();
 
-            EditText editText = findViewById(R.id.editText_username);
-            String username = editText.getText().toString();
-            intent.putExtra(USERNAME_MESSAGE, username);
-
-            editText = findViewById(R.id.editText_ip_number);
-            String hostname = editText.getText().toString();
-            intent.putExtra(HOSTNAME_MESSAGE, hostname);
-
-            editText = findViewById(R.id.editText_password);
-            String password = editText.getText().toString();
-            intent.putExtra(PASSWORD_MESSAGE, password);
+            insertStringInIntent(intent,(EditText)findViewById(R.id.editText_username),USERNAME_MESSAGE);
+            insertStringInIntent(intent,(EditText)findViewById(R.id.editText_ip_number),HOSTNAME_MESSAGE);
+            insertStringInIntent(intent,(EditText)findViewById(R.id.editText_password),PASSWORD_MESSAGE);
 
             setResult(RESULT_OK, intent);
             finish();
@@ -103,37 +96,13 @@ public class SettingsActivity extends Activity {
         }
         return false;
     }
-    private class AsyncExe extends AsyncTask<ArrayList<Object>, Void, Boolean>
+
+    public static void insertStringInIntent(Intent intent, EditText editText, String msgTag)
     {
-
-        @Override
-        protected Boolean doInBackground(ArrayList<Object>... objects) {
-            try
-            {
-                Session session = (Session)objects[0].get(0);
-                if(SSHClient.checkConnection(session)) return false;
-                SSHClient.sendCommand(session,(String)objects[1].get(0));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean state) {
-            if(state)
-            {
-                Toast.makeText(getApplicationContext(), "Wysłano!", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                Toast.makeText(getApplicationContext(), "Nie udało się!", Toast.LENGTH_SHORT).show();
-            }
-
-        }
+        String msg = editText.getText().toString();
+        intent.putExtra(msgTag, msg);
     }
+
 
     private class IndicatorListener extends Thread
     {
@@ -168,6 +137,21 @@ public class SettingsActivity extends Activity {
         {
             String message = (result!= null && result.isConnected()) ? "Połaczono" : "Nie udało się połączyć..";
             Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+        }
+    }
+    private class AsyncExe extends AsyncCommunicator
+    {
+        @Override
+        protected void onPostExecute(Boolean state) {
+            if(message != null)
+            {
+                TextView textView = findViewById(R.id.textViewSSHResponse);
+                textView.setText(message);
+            }
+            String msg = state ? "Wysłano!" : "Nie udało się!";
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            EditText editText = findViewById(R.id.editText_command);
+            editText.setText("");
         }
     }
 }

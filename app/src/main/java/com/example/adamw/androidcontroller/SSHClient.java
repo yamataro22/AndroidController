@@ -1,10 +1,9 @@
 package com.example.adamw.androidcontroller;
-import android.graphics.PorterDuff;
 import android.util.Log;
-
 import com.jcraft.jsch.*;
-
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -42,20 +41,6 @@ public class SSHClient {
         return session;
     }
 
-    public boolean sendCommand(String command) throws Exception
-    {
-        // Execute command
-
-        ChannelExec channelssh = (ChannelExec)session.openChannel("exec");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        channelssh.setOutputStream(baos);
-        channelssh.setCommand(command);
-        channelssh.connect();
-        channelssh.disconnect();
-        channelssh = null;
-        return true;
-    }
-
     static public boolean sendCommand(Session ses, String command) throws Exception
     {
         // Execute command
@@ -63,14 +48,41 @@ public class SSHClient {
         ChannelExec channelssh = (ChannelExec)ses.openChannel("exec");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         channelssh.setOutputStream(baos);
+
         channelssh.setCommand(command);
         channelssh.connect();
-        Log.i("ssh","connect");
         channelssh.disconnect();
-        Log.i("ssh","disconnect");
-        channelssh = null;
-        Log.i("ssh","null, teraz return");
         return true;
+    }
+
+    static public String sendCommandforResponse(Session ses, String command) throws Exception
+    {
+        // Execute command
+
+        ChannelExec channelssh = (ChannelExec)ses.openChannel("exec");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        channelssh.setOutputStream(baos);
+
+
+        channelssh.setCommand(command);
+        InputStream in= channelssh.getInputStream();
+        channelssh.connect();
+        byte[] tmp=new byte[1024];
+        String wiad = "pusto";
+        while(true){
+            while(in.available()>0){
+                int i=in.read(tmp, 0, 1024);
+                if(i<0)break;
+                wiad = new String(tmp, 0, i);
+            }
+            if(channelssh.isClosed()){
+                if(in.available()>0) continue;
+                break;
+            }
+            try{Thread.sleep(1000);}catch(Exception ee){}
+        }
+        channelssh.disconnect();
+        return wiad;
     }
 
 
@@ -93,9 +105,29 @@ public class SSHClient {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         channelssh.setOutputStream(baos);
 
+        InputStream in= channelssh.getInputStream();
+
+
+
+
         // Execute command
         channelssh.setCommand("mkdir nowa");
         channelssh.connect();
+
+        byte[] tmp=new byte[1024];
+        while(true){
+            while(in.available()>0){
+                int i=in.read(tmp, 0, 1024);
+                if(i<0)break;
+                System.out.print(new String(tmp, 0, i));
+            }
+            if(channelssh.isClosed()){
+                if(in.available()>0) continue;
+                break;
+            }
+            try{Thread.sleep(1000);}catch(Exception ee){}
+        }
+
         channelssh.disconnect();
         return baos.toString();
     }

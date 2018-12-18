@@ -11,6 +11,7 @@
     <string name="password_text_view">Wprowadź hasło</string>
     <string name="connect_button">Połącz</string>
     <string name="wyslij_komende_button">Wyślij do RPI</string>
+    <string name="odpowiedz_text_view">Odpowiedź z RPI:</string>
 
     <!-- Strings related to SteeringActivity -->
     <string name="on">Włącz</string>
